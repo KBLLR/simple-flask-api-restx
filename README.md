@@ -33,7 +33,10 @@ Simple [Flask API Server](https://blog.appseed.us/simple-flask-api-server/) powe
 ```bash
 $ git clone https://github.com/app-generator/flask-api-sample.git
 $ cd flask-api-sample
+$ cp .env.example .env
 ```
+
+Set `SECRET_KEY` in `.env` before you start the stack. `.env` is gitignored. With `FLASK_ENV=development` and an empty `SECRET_KEY`, the app generates an ephemeral key for that process. Any other environment stops at startup until `SECRET_KEY` is set.
 
 > Start the app in Docker
 
@@ -82,16 +85,27 @@ $ pip install -r requirements.txt
 
 <br />
 
-> **Step #4** - setup `flask` command for our app
+> **Step #4** - set environment variables
+
+Copy the example env file and keep the real file local. `.env` and `.env.*` are gitignored; `.env.example` is the template (`SECRET_KEY` empty, `FLASK_ENV=development`).
+
+```bash
+$ cp .env.example .env
+```
+
+`flask run` loads `.env` when `python-dotenv` is installed. You can also export the variables yourself:
 
 ```bash
 $ export FLASK_APP=run.py
 $ export FLASK_ENV=development
 ```
 
+When `FLASK_ENV=development` and `SECRET_KEY` is missing, startup generates an ephemeral key and prints a warning. Sessions from that key do not survive a restart. Set `SECRET_KEY` in `.env` (or export it) when you need a stable key. If `FLASK_ENV` is anything else, or is unset, the app exits with an error until `SECRET_KEY` is set.
+
 > Or for Windows-based systems
 
 ```powershell
+$ copy .env.example .env
 $ (Windows CMD) set FLASK_APP=run.py
 $ (Windows CMD) set FLASK_ENV=development
 $
@@ -122,6 +136,7 @@ api-server-flask/
 │   ├── config.py
 │   ├── models.py
 │   └── routes.py
+├── .env.example
 ├── README.md
 ├── requirements.txt
 └── run.py

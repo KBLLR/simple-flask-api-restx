@@ -1,0 +1,22 @@
+title = "simple-flask-api-restx"
+
+[extend]
+useDefault = true
+
+# Default rules miss low-entropy Flask secret assignments. These rules flag
+# a literal SECRET_KEY and ignore code that only reads the variable.
+[[rules]]
+id = "flask-secret-key-assignment"
+description = "Flask SECRET_KEY assigned a literal value"
+regex = '''(?im)^\s*(?:export\s+)?SECRET_KEY\s*=\s*[^\s#'"()][^\s#'"()]{7,}\s*(?:#.*)?$'''
+keywords = ["SECRET_KEY", "secret_key"]
+
+[[rules]]
+id = "flask-secret-key-quoted"
+description = "Flask SECRET_KEY assigned a quoted literal"
+regex = '''(?i)SECRET_KEY\s*=\s*['"][A-Za-z0-9_\-./+=]{8,}['"]'''
+keywords = ["SECRET_KEY", "secret_key"]
+
+[[allowlists]]
+description = "Env templates contain an empty SECRET_KEY placeholder"
+paths = ['''(^|/)\.env\.example$''']
