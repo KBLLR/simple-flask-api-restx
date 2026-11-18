@@ -44,7 +44,7 @@ Set `SECRET_KEY` in `.env` before you start the stack. `.env` is gitignored. Wit
 $ docker-compose up --build  
 ```
 
-The API server will start using the PORT `5000`.
+The API is published on port `5000` by default. Set `PORT` in `.env` before `docker-compose up` to publish a different host port (macOS AirPlay Receiver already binds `5000`). Nginx inside the stack still listens on container port `5000`.
 
 <br />
 
@@ -63,7 +63,9 @@ $ cd flask-api-sample
 
 <br />
 
-> **Step #2** - create virtual environment using python3 and activate it (keep it outside our project directory)
+> **Step #2** - create virtual environment using Python 3.11+ and activate it (keep it outside our project directory)
+
+SQLAlchemy 2.1 does not install on Python 3.10 or older.
 
 ```bash
 $ # Virtualenv modules installation (Unix based systems)
@@ -87,38 +89,42 @@ $ pip install -r requirements.txt
 
 > **Step #4** - set environment variables
 
-Copy the example env file and keep the real file local. `.env` and `.env.*` are gitignored; `.env.example` is the template (`SECRET_KEY` empty, `FLASK_ENV=development`).
+Copy the example env file and keep the real file local. `.env` and `.env.*` are gitignored; `.env.example` is the template (`SECRET_KEY` empty, `FLASK_ENV=development`, `PORT=5000`).
 
 ```bash
 $ cp .env.example .env
 ```
 
-`flask run` loads `.env` when `python-dotenv` is installed. You can also export the variables yourself:
+`python run.py` loads `.env` when `python-dotenv` is installed. You can also export the variables yourself:
 
 ```bash
-$ export FLASK_APP=run.py
 $ export FLASK_ENV=development
+$ export PORT=5000
 ```
 
 When `FLASK_ENV=development` and `SECRET_KEY` is missing, startup generates an ephemeral key and prints a warning. Sessions from that key do not survive a restart. Set `SECRET_KEY` in `.env` (or export it) when you need a stable key. If `FLASK_ENV` is anything else, or is unset, the app exits with an error until `SECRET_KEY` is set.
+
+`PORT` is the local dev server port and the Docker host port. It defaults to `5000`. On macOS, AirPlay Receiver occupies `5000`, so set `PORT` to a free port (for example `5001`) when the bind fails.
 
 > Or for Windows-based systems
 
 ```powershell
 $ copy .env.example .env
-$ (Windows CMD) set FLASK_APP=run.py
 $ (Windows CMD) set FLASK_ENV=development
+$ (Windows CMD) set PORT=5000
 $
-$ (Powershell) $env:FLASK_APP = ".\run.py"
 $ (Powershell) $env:FLASK_ENV = "development"
+$ (Powershell) $env:PORT = "5000"
 ```
 
 <br />
 
-> **Step #5** - start test APIs server at `localhost:5000`
+> **Step #5** - start the API server
+
+The process listens on `PORT` (default `5000`). With `PORT=5001` the server is at `localhost:5001`.
 
 ```bash
-$ flask run
+$ python run.py
 ```
 
 Use the API via `POSTMAN` or Swagger Dashboard.

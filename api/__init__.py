@@ -3,8 +3,6 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 
-import os
-
 from flask import Flask
 from flask_cors import CORS
 
@@ -26,7 +24,7 @@ rest_api.init_app(app)
 # Enable CORS
 CORS(app)
 
-# Setup database
-@app.before_first_request
-def initialize_database():
+# Flask 2.3 removed before_first_request. Create the tables as soon as the
+# app is imported so `python run.py` and gunicorn both start ready to serve.
+with app.app_context():
     db.create_all()

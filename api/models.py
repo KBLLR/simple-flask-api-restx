@@ -5,9 +5,8 @@ Copyright (c) 2019 - present AppSeed.us
 
 from datetime import datetime
 
-import json
-
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import select
 
 db = SQLAlchemy()
 
@@ -27,9 +26,17 @@ class Datas(db.Model):
     def update_data(self, new_data):
         self.data = new_data
 
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
     @classmethod
     def get_by_id(cls, id):
-        return cls.query.filter_by(id=id).first()
+        return db.session.get(cls, id)
+
+    @classmethod
+    def get_all(cls):
+        return db.session.scalars(select(cls)).all()
 
     def toDICT(self):
 
