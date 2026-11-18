@@ -1,8 +1,13 @@
-Flask==2.0.2
-flask-restx==0.5.1
-Flask-SQLAlchemy==2.5.1
-Flask-Cors==3.0.10
-gunicorn==20.1.0
-pytest==6.2.5
-python-dotenv==0.19.2
-Werkzeug==2.0.3
+# Pinned to a stack that starts on SQLAlchemy 2.
+# Flask-SQLAlchemy 2.5 imports sqlalchemy.__all__, which SQLAlchemy 2 removed,
+# so an unpinned fresh install crashes before the app can serve requests.
+# SQLAlchemy 2.1 requires Python >= 3.11.
+Flask==3.1.3
+Werkzeug==3.1.9
+flask-restx==1.3.2
+Flask-SQLAlchemy==3.1.1
+SQLAlchemy==2.1.9
+Flask-Cors==6.0.5
+gunicorn==23.0.0
+pytest==9.2.0
+python-dotenv==1.2.4

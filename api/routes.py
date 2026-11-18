@@ -6,7 +6,7 @@ Copyright (c) 2019 - present AppSeed.us
 from flask import request
 from flask_restx import Api, Resource, fields
 
-from api.models import db, Datas
+from api.models import Datas
 
 rest_api = Api(version="1.0", title="Datas API")
 
@@ -45,7 +45,7 @@ class Items(Resource):
     """
     def get(self):
 
-        items = Datas.query.all()
+        items = Datas.get_all()
         
         return {"success" : True,
                 "msg"     : "Items found ("+ str(len( items ))+")",
@@ -128,8 +128,7 @@ class ItemManager(Resource):
                     "msg": "Item not found."}, 400
 
         # Delete and save the change
-        Datas.query.filter_by(id=id).delete()
-        db.session.commit()
+        item.delete()
 
         return {"success" : True,
                 "msg"     : "Item [" +str(id)+ "] successfully deleted"}, 200                           
